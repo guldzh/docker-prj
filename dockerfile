@@ -1,14 +1,20 @@
-# Use the Debian base image
-FROM debian:bullseye-slim
+# Use the Node.js base image
+FROM node:14-slim
 
-# Install nginx
-RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
+# Set the working directory to /app
+WORKDIR /app
 
-# Copy the nginx configuration file to the container
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Expose port 80
-EXPOSE 80
+# Install dependencies
+RUN npm install
 
-# Start nginx in the foreground when the container starts
-CMD ["nginx", "-g", "daemon off;"]
+# Copy the application files
+COPY . .
+
+# Expose port 3000
+EXPOSE 3000
+
+# Start the application
+CMD ["npm", "start"]
